@@ -1,55 +1,31 @@
-````markdown
-# 🟢 GoQuiz
+# GoQuiz
 
-GoQuiz is a scalable digital training and assessment platform where trainers can create assessments and trainees can complete them using a training code.
+GoQuiz is a scalable digital training and assessment platform. Trainers can create assessments, use reusable quiz templates, publish training codes, and view assessment analytics. Trainees can join assessments using a code, submit answers, and view their results.
 
-The platform supports reusable assessment templates, automatic scoring, trainee result tracking, and trainer analytics.
+The platform uses React, Node.js, PostgreSQL, Redis, RabbitMQ, Python, Nginx, and Docker.
 
 ## Main Features
 
 - Trainer and trainee registration and login
-- JWT-based authentication
+- JWT authentication
 - Role-based access
-- Training assessment creation
+- Assessment creation
 - Reusable training templates
-- Training-code access
+- Quiz-code access
 - Automatic scoring
-- Trainee result history
+- Trainee result tracking
 - Trainer assessment analytics
 - Redis caching
-- RabbitMQ asynchronous processing
-- Docker-based deployment
-
-## Technology Stack
-
-- React and Vite
-- Node.js and Express
-- Python
-- PostgreSQL
-- Redis
-- RabbitMQ
-- Nginx
-- Docker Compose
-
----
+- RabbitMQ asynchronous scoring
+- Docker deployment
 
 ## How to Run the Project
 
-### 1. Install the Requirements
-
-Make sure you have installed:
-
-- Git
-- Docker Desktop
-- Visual Studio Code or another code editor
-
-You do not need to install PostgreSQL, Redis, RabbitMQ, Node.js, or Python separately because they run inside Docker containers.
-
-### 2. Clone the Repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
-````
+```
 
 Enter the project folder:
 
@@ -57,161 +33,114 @@ Enter the project folder:
 cd YOUR_REPOSITORY_NAME
 ```
 
-Replace `YOUR_USERNAME` and `YOUR_REPOSITORY_NAME` with the correct GitHub information.
+Replace `YOUR_USERNAME` and `YOUR_REPOSITORY_NAME` with the actual GitHub username and repository name.
 
-### 3. Start Docker Desktop
+### 2. Start Docker Desktop
 
-Open Docker Desktop and wait until the Docker engine is running.
+Open Docker Desktop and wait until Docker is running.
 
-### 4. Start GoQuiz
+### 3. Start GoQuiz
 
-Inside the project folder, run:
+Run this command inside the project folder:
 
 ```bash
 docker compose up --build
 ```
 
-Wait until all containers have started.
+Wait until all containers are running.
 
-### 5. Open the Platform
+### 4. Open the platform
 
-Open this address in your browser:
+Open the following address in your browser:
 
 ```text
 http://localhost:8080
 ```
 
----
-
 ## How to Use the Platform
 
-### Step 1: Register as a Trainer
+### Step 1: Register as a trainer
 
-Open the registration page and create an account using:
+Create an account using the **Trainer / Admin** role.
+
+Example:
 
 ```text
 Name: Trainer Demo
 Email: trainer@example.com
 Password: 123456
-Account Type: Trainer / Admin
+Role: Trainer / Admin
 ```
 
-After registration, log in using the trainer account.
+Login using the trainer account.
 
-### Step 2: Open Training Modules
+### Step 2: Create an assessment
 
-Click **Training Modules** from the sidebar.
+Open **Training Modules** from the sidebar.
 
-The trainer can:
+The trainer can create an assessment manually or select one of the reusable training templates.
 
-* Create a new assessment manually
-* Select a reusable training template
-* Edit assessment questions and answers
-* Publish the assessment
+Enter the assessment title, description, questions, answer options, and correct answers.
 
-### Step 3: Create and Publish an Assessment
+Click **Publish Training Assessment**.
 
-Enter the following information:
-
-* Assessment title
-* Description
-* Questions
-* Answer options
-* Correct answers
-
-Alternatively, select a template and click **Use Template**.
-
-After editing the assessment, click:
-
-```text
-Publish Training Assessment
-```
-
-The platform will generate a training code.
-
-Example:
+The platform will generate a training code, such as:
 
 ```text
 ABC123
 ```
 
-Save the code because the trainee will use it to join the assessment.
+Save this code for the trainee.
 
-### Step 4: Register as a Trainee
+### Step 3: Register as a trainee
 
-Log out from the trainer account.
+Logout from the trainer account and create another account using the **Partner / Trainee** role.
 
-Create another account using:
+Example:
 
 ```text
 Name: Trainee Demo
 Email: trainee@example.com
 Password: 123456
-Account Type: Partner / Trainee
+Role: Partner / Trainee
 ```
 
-Log in using the trainee account.
+Login using the trainee account.
 
-### Step 5: Join the Assessment
+### Step 4: Join the assessment
 
-Click **Training Modules**.
+Open **Training Modules**.
 
-Enter the training code created by the trainer and click:
+Enter the training code created by the trainer and click **Join**.
 
-```text
-Join
-```
+### Step 5: Submit the assessment
 
-The assessment questions will appear.
+Answer every question and click **Submit Assessment**.
 
-### Step 6: Submit the Assessment
+The submission is sent to RabbitMQ and scored automatically by the Python scoring worker.
 
-Answer every question and click:
+### Step 6: View the result
 
-```text
-Submit Assessment
-```
+Open **Assessment Results**.
 
-The submission will be sent to RabbitMQ and processed automatically by the Python scoring worker.
+The result may first show `PENDING`. Wait a few seconds and refresh the results.
 
-### Step 7: View the Trainee Result
+The status should change to `COMPLETED`, and the final score will appear.
 
-Click **Assessment Results**.
+### Step 7: View trainer analytics
 
-The result may initially show:
+Login again using the trainer account.
 
-```text
-PENDING
-```
+Open **Assessment Results** to view:
 
-Wait a few seconds and click the refresh button.
-
-The status should change to:
-
-```text
-COMPLETED
-```
-
-The final score will then be displayed.
-
-### Step 8: View Trainer Analytics
-
-Log out and sign in again using the trainer account.
-
-Click **Assessment Results**.
-
-The trainer can view:
-
-* Total assessment attempts
-* Completed submissions
-* Pending submissions
-* Average score for each assessment
-
----
+- Total attempts
+- Completed submissions
+- Pending submissions
+- Average assessment score
 
 ## RabbitMQ Dashboard
 
-Open the RabbitMQ dashboard at:
+Open:
 
 ```text
 http://localhost:15672
@@ -224,35 +153,27 @@ Username: guest
 Password: guest
 ```
 
-The assessment scoring jobs are processed through:
-
-```text
-scoring_queue
-```
-
----
+The scoring tasks are processed through the `scoring_queue`.
 
 ## Stop the Platform
 
-To stop all containers, run:
+To stop the platform:
 
 ```bash
 docker compose down
 ```
 
-To start the platform again:
+To start it again:
 
 ```bash
 docker compose up --build
 ```
 
-To delete all saved users, assessments, submissions, and results:
+To remove all saved users, assessments, submissions, and results:
 
 ```bash
 docker compose down -v
 ```
 
-> Warning: The `-v` command permanently deletes the local database volume.
-
-```
-```
+> Warning: This command deletes the local database volume.
+````
